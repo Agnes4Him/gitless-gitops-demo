@@ -10,3 +10,17 @@ Follow this guide on the official `kind` documentation to install for your OS - 
 ```bash
 kind create cluster --name gitless-gitops-demo --config kubernetes/kind/kind-config.yaml
 ```
+
+## Install `flux` in the cluster
+** Linux
+```bash
+curl -s https://fluxcd.io/install.sh | bash
+flux install
+```
+
+** Windows
+winget install -e --id FluxCD.Flux
+
+OR
+
+choco install flux
