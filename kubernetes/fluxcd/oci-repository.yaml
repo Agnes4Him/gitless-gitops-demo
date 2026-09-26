@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+
+metadata:
+  name: demo-oci-repository
+  namespace: flux-system
+
+spec:
+  interval: 1m
+  url: oci://${account_id}.dkr.ecr.${region}.amazonaws.com/demo-manifests
+  provider: aws
+  ref:
+    tag: demo

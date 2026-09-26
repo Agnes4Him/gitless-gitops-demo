@@ -1,0 +1,10 @@
+**.venv
+
+**.env
+
+**/*.tfvars
+**/*.tfvars.json
+**terraform.tfvars
+**terraform.tfstate
+**.tfstate.backup
+**.terraform/
