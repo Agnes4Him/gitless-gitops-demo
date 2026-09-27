@@ -24,3 +24,33 @@ winget install -e --id FluxCD.Flux
 OR
 
 choco install flux
+
+## Set env variables
+```bash
+export AWS_ACCESS_KEY_ID="your-access-key-id"
+export AWS_SECRET_ACCESS_KEY="your-secret-access-key"
+
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+REGION=$(aws configure get region)
+
+ECR_PASSWORD=$(aws ecr get-login-password --region $REGION)
+```
+
+## Create secret for flux OCI-Repository object
+```bash
+kubectl create secret docker-registry ecr-credentials \
+  --namespace flux-system \
+  --docker-server=$ACCOUNT_ID.dkr.ecr.eu-west-2.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password="$ECR_PASSWORD"
+```
+
+## Install flux kustomization and oci-repository in flux-system namespace
+```bash
+sed \
+  -e "s/\${account_id}/$ACCOUNT_ID/" \
+  -e "s/\${region}/$REGION/" \
+  kubernetes/fluxcd/oci-repository.yaml | kubectl apply -f -
+
+kubectl apply -f kubernetes/kustomization.yaml
+```

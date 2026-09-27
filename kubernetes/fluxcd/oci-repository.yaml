@@ -8,6 +8,11 @@ metadata:
 spec:
   interval: 1m
   url: oci://${account_id}.dkr.ecr.${region}.amazonaws.com/demo-manifests
+
   provider: aws
+
+  secretRef:
+    name: ecr-credentials
+
   ref:
     tag: demo
