@@ -17,6 +17,8 @@ spec:
         app: demo-api
 
     spec:
+      imagePullSecrets:
+        - name: ecr-image-credentials
       containers:
         - name: demo-api
           image: demo-api:latest

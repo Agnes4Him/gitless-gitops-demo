@@ -31,6 +31,7 @@ export AWS_ACCESS_KEY_ID="your-access-key-id"
 export AWS_SECRET_ACCESS_KEY="your-secret-access-key"
 
 ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+ECR_URL="$ACCOUNT_ID.dkr.ecr.eu-west-2.amazonaws.com"
 REGION=$(aws configure get region)
 
 ECR_PASSWORD=$(aws ecr get-login-password --region $REGION)
@@ -38,9 +39,15 @@ ECR_PASSWORD=$(aws ecr get-login-password --region $REGION)
 
 ## Create secret for flux OCI-Repository object
 ```bash
-kubectl create secret docker-registry ecr-credentials \
+kubectl create secret docker-registry ecr-artifact-credentials \
   --namespace flux-system \
-  --docker-server=$ACCOUNT_ID.dkr.ecr.eu-west-2.amazonaws.com \
+  --docker-server=$ECR_URL \
+  --docker-username=AWS \
+  --docker-password="$ECR_PASSWORD"
+
+kubectl create secret docker-registry ecr-image-credentials \
+  --namespace demo-api \
+  --docker-server=$ECR_URL \
   --docker-username=AWS \
   --docker-password="$ECR_PASSWORD"
 ```
