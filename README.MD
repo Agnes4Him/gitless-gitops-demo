@@ -3,6 +3,12 @@
 uv run uvicorn api:app --reload --port 8080
 ```
 
+## Create ECR repository with Terraform
+```bash
+cd terraform
+terraform apply --auto-approve
+```
+
 ## Install `kind`
 Follow this guide on the official `kind` documentation to install for your OS - https://kind.sigs.k8s.io/docs/user/quick-start/
 
@@ -44,12 +50,6 @@ kubectl create secret docker-registry ecr-artifact-credentials \
   --docker-server=$ECR_URL \
   --docker-username=AWS \
   --docker-password="$ECR_PASSWORD"
-
-kubectl create secret docker-registry ecr-image-credentials \
-  --namespace demo-api \
-  --docker-server=$ECR_URL \
-  --docker-username=AWS \
-  --docker-password="$ECR_PASSWORD"
 ```
 
 ## Install flux kustomization and oci-repository in flux-system namespace
@@ -59,5 +59,24 @@ sed \
   -e "s/\${region}/$REGION/" \
   kubernetes/fluxcd/oci-repository.yaml | kubectl apply -f -
 
-kubectl apply -f kubernetes/kustomization.yaml
+kubectl apply -f kubernetes/fluxcd/kustomization.yaml
 ```
+
+## Create secret for the api
+```bash
+kubectl create secret docker-registry ecr-image-credentials \
+  --namespace demo-api \
+  --docker-server=$ECR_URL \
+  --docker-username=AWS \
+  --docker-password="$ECR_PASSWORD"
+```
+
+## Visit API at http://localhost:30080/docs
+
+## Clean up
+- delete kustomization
+- delete oci-repository
+- run `flux uninstall`
+- delete images and manifests from ECR
+- `cd terraform` & run `terraform destroy`
+-
